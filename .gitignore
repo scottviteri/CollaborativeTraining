@@ -1,0 +1,17 @@
+# LaTeX auxiliary files
+*.aux
+*.log
+*.out
+*.toc
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.bbl
+*.blg
+
+# Temporary text extraction files
+collaborative_training.txt
+collaborative_training_layout.txt
+
+# Temporary image files
+page-*.jpg
