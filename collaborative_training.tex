@@ -83,7 +83,7 @@
   	surround sep=2pt,
     ar/.style={postaction={decorate}},
   	execute at begin picture={\tikzset{
-  		x=\bbx, y=\bby, 
+  		x=\bbx, y=\bby,
 			circuit logic US, tiny circuit symbols
 			}
 		}
@@ -128,7 +128,7 @@
       prefix after command={\pgfextra{\let\fixname\tikzlastnode}},
       append after command={\pgfextra{\draw
       	\ifnum #1=0{} \else foreach \i in {1,...,#1} {
-        	($(\fixname.north west)!{(2*\i-1)/(2*#1)}!(\fixname.south west)$) +(-\bbportlen,0) coordinate (\fixname_in\i) -- +(\bbpenetrate,0) coordinate (\fixname_in\i')}\fi 
+        	($(\fixname.north west)!{(2*\i-1)/(2*#1)}!(\fixname.south west)$) +(-\bbportlen,0) coordinate (\fixname_in\i) -- +(\bbpenetrate,0) coordinate (\fixname_in\i')}\fi
   					%Define the endpoints of tickmarks
         \ifnum #2=0{} \else foreach \i in {1,...,#2} {
         	($(\fixname.north east)!{(2*\i-1)/(2*#2)}!(\fixname.south east)$) +(-
@@ -153,15 +153,15 @@
  	shell outside color/.store in=\pocolor,
  	surround sep/.store in=\ssep,
  	link/.style={
-  	circle, 
-  	draw=black, 
+  	circle,
+  	draw=black,
   	fill=black,
-  	inner sep=0pt, 
+  	inner sep=0pt,
  		minimum size=\lsize
  	},
   shell/.style={
- 		circle, 
- 		draw = \pocolor, 
+ 		circle,
+ 		draw = \pocolor,
   	fill = \picolor,
   	minimum size = \psize
   },
@@ -175,33 +175,33 @@
   },
   funcr/.style={
     func,
-    rectangle round north west=false, 
+    rectangle round north west=false,
 		rectangle round south west=false,
   },
   funcl/.style={
     func,
-		rectangle round north east=false, 
+		rectangle round north east=false,
 		rectangle round south east=false,
   },
   funcu/.style={
     func,
-		rectangle round south east=false, 
+		rectangle round south east=false,
 		rectangle round south west=false,
   },
   funcd/.style={
     func,
-		rectangle round north east=false, 
+		rectangle round north east=false,
 		rectangle round north west=false,
   },
   outer shell/.style={
- 		ellipse, 
+ 		ellipse,
  		draw,
   	inner sep=\ssep,
   	color=gray,
  	},
   intermediate shell/.style={
  		ellipse,
- 		dashed, 
+ 		dashed,
   	draw,
   	inner sep=\ssep,
  		color=\pocolor,
@@ -257,7 +257,7 @@
          prefix after command={\pgfextra{\let\fixname\tikzlastnode}},
          append after command={\pgfextra{\draw
             \ifnum #1=0{} \else foreach \i in {1,...,#1} {
-            	($(\fixname.north west)!{\i/(#1+1)}!(\fixname.south west)$) +(-\bbportlen,0) coordinate (\fixname_in\i) -- +(\bbpenetrate,0) coordinate (\fixname_in\i')}\fi 
+            	($(\fixname.north west)!{\i/(#1+1)}!(\fixname.south west)$) +(-\bbportlen,0) coordinate (\fixname_in\i) -- +(\bbpenetrate,0) coordinate (\fixname_in\i')}\fi
   					%Define the endpoints of tickmarks
             \ifnum #2=0{} \else foreach \i in {1,...,#2} {
             	($(\fixname.north east)!{\i/(#2+1)}!(\fixname.south east)$) +(-
@@ -286,7 +286,7 @@ How can two agents learn to communicate?
 Imagine a sequential interaction in which each of two players can output messages, but these messages may initially be written in completely different \emph{languages} (or even modalities).
 How, in principle, can they bridge this gap and eventually communicate?
 
-One response would be to create some external goal that the two players A and B must mutually achieve and to treat language like any other action to be learned via reinforcement learning. Specifically, a particularly elegant and instrumentally convergent task is that of predicting future observations. 
+One response would be to create some external goal that the two players A and B must mutually achieve and to treat language like any other action to be learned via reinforcement learning. Specifically, a particularly elegant and instrumentally convergent task is that of predicting future observations.
 
 At this point, there are several modeling choices.
 For instance, we could give A access to B's next observation and have A learn to give short messages to B such that B can predict its observations conditional on A's messages (the messages would have to be short or of a different type than the observations to be interesting, because otherwise the message could be a copy of the observations).
@@ -359,14 +359,15 @@ $$
 \node[above=.2cm of frameS.north] {Simple Symmetric Communication};
 \end{tikzpicture}
 \end{center}
+\caption{Simple Symmetric Communication. Timing convention (Moore): at each discrete step $t$, each agent first emits a message based only on its current internal state. After emission, both agents read the shared observation $D_t$ and the partner's message to update their internal states for the next step. Messages at step $t$ therefore do not depend on $D_t$.}
 \end{figure}
 
 \section{Players as coalgebras}
 
-We can model each player then as an $F$-coalgebra 
+We can model each player then as an $F$-coalgebra
 $(S_X,\;\alpha_X\colon S_X\longrightarrow F S_X)$, where $F$ will be specialized to encode the notion that a player can \emph{receive inputs} and \emph{produce outputs} -- e.g. $F(S)\;=\;\mathsf{Out}\times S^{\mathsf{In}}$ for some types $\mathsf{Out}$ and $\mathsf{In}$.
 
-Now we can add in requirements on the structure of $S$, $\mathsf{In}$, and $\mathsf{Out}$ to match the problem setup. First, to model the emergence of communication, we should model the ability of the players to learn. We can do this by expressing $S$ as $\Theta \times \_$, where $\Theta$ is the space of parameterizations of the player's behavior. Next $\mathsf{Out}$ must include A's ``raw'' message type $M_{A\rightarrow B}$. It is ``raw'' because we will need to include some metadata in order to give the learning algorithm the necessary reward signals. 
+Now we can add in requirements on the structure of $S$, $\mathsf{In}$, and $\mathsf{Out}$ to match the problem setup. First, to model the emergence of communication, we should model the ability of the players to learn. We can do this by expressing $S$ as $\Theta \times \_$, where $\Theta$ is the space of parameterizations of the player's behavior. Next $\mathsf{Out}$ must include A's ``raw'' message type $M_{A\rightarrow B}$. It is ``raw'' because we will need to include some metadata in order to give the learning algorithm the necessary reward signals.
 
 Next we have $\mathsf{In}_A$ and $\mathsf{In}_B$ which each consist of the other player's output type and the data type $D$ to be predicted: $\mathsf{In}_A=D \times \mathsf{Out}_B$ and $\mathsf{In}_B=D \times \mathsf{Out}_A$.
 
@@ -375,7 +376,7 @@ $$
 \Theta \xrightarrow{\pi, P} \Delta M \times (\Delta D)^M
 $$ where $\pi$ is called the policy, and we require implementations of $\pi$ and $P$ for both players. So the policy produces a distribution over output messages (actions) given a state, and the predictive model $P$ produces a function from messages to distributions over input data.
 
-The state update part of $\alpha$ is going to be a gradient descent step with respect to $\theta \in \Theta$, but the loss function needs to include not only player A's own score $\ln P_\theta^A(d \in D \mid m_{B \rightarrow A})$, but also B's score from the previous round given A's previous message.
+The state update part of $\alpha$ is going to be a gradient descent step with respect to $\theta \in \Theta$, but the loss function needs to include not only player A's own score $\ln P_\theta^A(d \in D \mid m_{B \rightarrow A})$, but also B's score from the previous round given A's previous message. We will explicitly tie parameters within each agent: the same $\theta_X\in\Theta_X$ controls both the action policy $\pi_X$ and the prediction model $P_X$.
 
 So A's state must include not just their weights $\theta_A \in \Theta_A$, but also the score that B received in the previous time step as well as the message that caused that score for the other player.
 \section{Prediction and policy components}
@@ -383,15 +384,38 @@ So A's state must include not just their weights $\theta_A \in \Theta_A$, but al
 Written out, we have $S_A = \Theta_A \times \mathbb{R} \times M_{B\rightarrow A}$ and $S_B = \Theta_B \times \mathbb{R} \times M_{A \rightarrow B}$.
 Each player X consists of an initial state $s_0^X$ and functions $U_X : \mathsf{In}_X \times S_X \rightarrow S_X$ and $\Pi_X : S_X \rightarrow \mathsf{Out}_X$, where $\mathsf{Out}_A = M_{A \rightarrow B} \times \mathbb{R} \times M_{B \rightarrow A}$, $\mathsf{In}_A = D \times \mathsf{Out}_B$, and $\mathsf{In}_B = D \times \mathsf{Out}_A$.
 
-Recall we have access to functions $\pi_A : \Theta_A \rightarrow \Delta M_{A \rightarrow B}$, $\pi_B : \Theta_B \rightarrow \Delta M_{B \rightarrow A}$, $P_A : M_{B \rightarrow A} \rightarrow \Delta D$, and $P_B : M_{A \rightarrow B} \rightarrow \Delta D$ to implement $U_A$, $U_B$, $\Pi_A$, and $\Pi_B$.
+Recall we have access to functions $\pi_A : \Theta_A \rightarrow \Delta M_{A \rightarrow B}$, $\pi_B : \Theta_B \rightarrow \Delta M_{B \rightarrow A}$, $P_A : \Theta_A \rightarrow (M_{B \rightarrow A} \rightarrow \Delta D)$, and $P_B : \Theta_B \rightarrow (M_{A \rightarrow B} \rightarrow \Delta D)$ to implement $U_A$, $U_B$, $\Pi_A$, and $\Pi_B$. Within each agent, $\theta_X$ is shared between $\pi_X$ and $P_X$. We use Moore timing for emission and update; explicit online update equations appear in the Coalgebraic Maximum-Likelihood section.
 
-A natural choice is the following:
+\paragraph{Explicit policy (output) maps}
+For $X\in\{A,B\}$ with state $S_X=\Theta_X\times\mathbb{R}\times M_{Y\to X}$ and output $\mathsf{Out}_X=M_{X\to Y}\times\mathbb{R}\times M_{Y\to X}$,
+\[
+  \Pi_A\bigl((\theta_A, r_A, m_{B\to A})\bigr)
+  =\\
+  \text{let } m_{A\to B}\sim\pi_{\theta_A}(\cdot)\ \text{in}\ (m_{A\to B},\ r_A,\ m_{B\to A}),
+\]
+\[
+  \Pi_B\bigl((\theta_B, r_B, m_{A\to B})\bigr)
+  =\\
+  \text{let } m_{B\to A}\sim\pi_{\theta_B}(\cdot)\ \text{in}\ (m_{B\to A},\ r_B,\ m_{A\to B}).
+\]
+
+\paragraph{Explicit update maps (single-step Monte Carlo)}
+With Moore timing, at step $t$ each agent first emits via $\Pi_X$, then consumes inputs $(D_t,\, \text{partner out})$ and updates its state. A simple instantiation of the online ascent update (using the immediate cooperative score as the learning signal for the previous action) is:
 \begin{align*}
-U_B((d, (m_{A\rightarrow B}, &r_A, m_{B \rightarrow A}^{\text{old}})) : \mathsf{In}_B, (\theta_B, \_, \_) : \Theta_B \times \mathbb{R} \times M_{A \rightarrow B}) : \Theta_B \times \mathbb{R} \times M_{A \rightarrow B} := \\
-&\quad (\theta_B - \nabla_{\theta_B} \ln P_{\theta_B} (d \mid m_{A \rightarrow B}) - r_A \nabla_{\theta_B} \pi_{\theta_B} (m_{B \rightarrow A}^{\text{old}}), \ln P_{\theta_B} (d \mid m_{A \rightarrow B}), m_{A \rightarrow B})
+U_A\bigl((d, &(m_{B\to A}, r_B, m_{A\to B}^{\mathrm{old}})),\ (\theta_A,\ r_A,\ m_{B\to A}^{\mathrm{old}})\bigr)
+:=\\
+&\quad \Bigl(\,\theta_A
+  + \underbrace{\nabla_{\theta_A}\ln P_{\theta_A}(d\mid m_{B\to A})}_{\text{predictor ascent}}
+  + \underbrace{r_B\,\nabla_{\theta_A}\ln\pi_{\theta_A}(m_{A\to B}^{\mathrm{old}})}_{\text{policy ascent}},\ 
+  \underbrace{\ln P_{\theta_A}(d\mid m_{B\to A})}_{\text{store new score}},\ m_{B\to A}\Bigr),\\
+U_B\bigl((d, &(m_{A\to B}, r_A, m_{B\to A}^{\mathrm{old}})),\ (\theta_B,\ r_B,\ m_{A\to B}^{\mathrm{old}})\bigr)
+:=\\
+&\quad \Bigl(\,\theta_B
+  + \underbrace{\nabla_{\theta_B}\ln P_{\theta_B}(d\mid m_{A\to B})}_{\text{predictor ascent}}
+  + \underbrace{r_A\,\nabla_{\theta_B}\ln\pi_{\theta_B}(m_{B\to A}^{\mathrm{old}})}_{\text{policy ascent}},\ 
+  \underbrace{\ln P_{\theta_B}(d\mid m_{A\to B})}_{\text{store new score}},\ m_{A\to B}\Bigr).
 \end{align*}
-
-$$\Pi_B((\theta_B, r_B, m_{A \rightarrow B}) : S_B) : M_{B \rightarrow A} \times \mathbb{R} \times M_{A \rightarrow B} := \text{let } m_{B \rightarrow A} \sim \pi_{\theta_B}(\cdot) \text{ in } (m_{B \rightarrow A}, r_B, m_{A \rightarrow B})$$
+Here the second component of each state stores the last predictive log-likelihood (used as the scalar learning signal in the partner's next update), and the third stores the last partner message. More sophisticated multi-step or discounted updates (with baselines, eligibility traces, or buffers) can be substituted per Section~\ref{sec:improvements} and the Coalgebraic MLE discussion.
 
 \begin{figure}
 \begin{center}
@@ -427,67 +451,58 @@ $$\Pi_B((\theta_B, r_B, m_{A \rightarrow B}) : S_B) : M_{B \rightarrow A} \times
 \node[above=.2cm of frame.north] {Detailed Symmetric Communication};
 \end{tikzpicture}
 \end{center}
+\caption{Detailed Symmetric Communication (Moore timing): at each discrete step $t$, each agent $X$ first emits its message $\Pi_X(s_t^X)$ (equivalently, sample $m_t^X\sim\pi_{\theta_X}(\cdot)$ based on $s_t^X$). After emission, $X$ consumes the current inputs $(D_t,\, \text{partner's message at }t)$ and applies $U_X$ to obtain $s_{t+1}^X$. Thus, actions at step $t$ are functions of $s_t^X$ only, while observations $D_t$ influence the next state.}
 \end{figure}
 The important point is how the weights get updated in $U_A$ / $U_B$.
-The $\nabla_{\theta_B} \ln P_{\theta_B}(d \mid m_{A \rightarrow B})$ term allows the player to get better at predicting observations given the other's messages, and $r_A \nabla_{\theta_B} \pi_{\theta_B}(m_{B \rightarrow A})$ is a policy-gradient/REINFORCE-style loss term which is derived from the following observation.
-\paragraph{Policy Gradient}
-Given system trajectories $\tau$ distributed as $P_\theta(\tau)$, define expected reward
+The $\nabla_{\theta_B} \ln P_{\theta_B}(d \mid m_{A \rightarrow B})$ term allows the player to get better at predicting observations given the other's messages, and $r_A \nabla_{\theta_B} \ln \pi_{\theta_B}(m_{B \rightarrow A})$ is a policy-gradient/REINFORCE-style term; the combined objective and full online update are given below.
 
-$$
-J(\theta)=\mathbb{E}_{\tau\sim P_\theta}[R(\tau)] .
-$$
+\section{Coalgebraic Maximum-Likelihood Objective}
 
-Standard calculus yields
+We can phrase the cooperative objective as a maximum-likelihood problem over the \emph{composite} synchronous system formed by wiring the two agents together with the exogenous data source $D$ under Moore timing.
 
-$$
-\nabla_\theta J(\theta)
-\;=\;
-\mathbb{E}_{\tau\sim P_\theta}\!\bigl[R(\tau)\,\nabla_\theta\ln P_\theta(\tau)\bigr].
-$$
+Coalgebraic view. Each agent $X\in\{A,B\}$ is an $F$-coalgebra
+\begin{align}
+  \alpha_X:\; S_X \longrightarrow \Delta(M_{X\to Y}) \times S_X^{\,D\times M_{Y\to X}},
+\end{align}
+whose components are the stochastic output map $s\mapsto \pi_{\theta_X}(\cdot\mid s)$ and the deterministic/stochastic update map $(s,(d,m))\mapsto U_X(s,d,m)$. Wiring $A$ and $B$ yields a composite Moore machine over the joint state $S=S_A\times S_B$.
 
-Here we take
+Subjective per-step likelihood. Since $D_t$ is exogenous, the only $\theta$-dependent “likelihood” the composite can assign to the observation stream is via the agents’ predictors. At time $t$ define the cooperative score
+\begin{align}
+  r_t &= \log P_{\theta_B}(D_t\mid m_{A\to B}^t) + \log P_{\theta_A}(D_t\mid m_{B\to A}^t),
+\end{align}
+and the multiplicative weight
+\begin{align}
+  w_t &= \exp(r_t) = P_{\theta_B}(D_t\mid m_{A\to B}^t)\,P_{\theta_A}(D_t\mid m_{B\to A}^t).
+\end{align}
 
-$$
-R(\tau)=\frac{1}{n}\sum_{i=1}^{n}\!
-\bigl(
-\ln P_{\theta_B}(d_i\mid m_{A\to B}^i)
-+
-\ln P_{\theta_A}(d_i\mid m_{B\to A}^i)
-\bigr).
-$$
+Coalgebraic MLE objective. For a discounted horizon $\gamma\in(0,1)$, define the trajectory log-likelihood functional produced by the composite machine as
+\begin{align}
+  \mathcal{L}_\gamma(\tau;\theta)
+    &= \sum_{t\ge 1}\gamma^{t-1}\,\log w_t \\
+    &= \sum_{t\ge 1}\gamma^{t-1}\Bigl(\log P_{\theta_B}(D_t\mid m_{A\to B}^t)+\log P_{\theta_A}(D_t\mid m_{B\to A}^t)\Bigr).
+\end{align}
+Our coalgebraic MLE problem is then
+\begin{align}
+  \max_{\theta}\; J_\gamma(\theta)
+    &:=\;\mathbb{E}_{\tau\sim P_\theta}\bigl[\mathcal{L}_\gamma(\tau;\theta)\bigr].
+\end{align}
+that is, choose the coalgebra parameters $\theta$ (which determine output and update components) so that the \emph{wired} Moore machine assigns maximal subjective likelihood to the observed stream according to its internal predictors. The exogenous factors $P(D_t)$ cancel as they are $\theta$-independent.
 
-Writing the trajectory as triples
-$(d_i,m_{A\to B}^i,m_{B\to A}^i)_{i\ge 0}$,
-
-$$
-P_\theta(\tau)
-=\prod_{i}
-P(d_i)\;
-\pi_{\theta_A}(m_{A\to B}^i)
-\;
-\pi_{\theta_B}(m_{B\to A}^i),
-$$
-
-with
-$\theta_A^{i+1}=U_A(d_i,m_{B\to A}^i,\theta_A^i)$
-and likewise for~$\theta_B$.
-
-Hence
-
-$$
-\nabla_{\theta_A}\ln P_\theta(\tau)
-=\sum_{i}\nabla_{\theta_A}\ln\pi_{\theta_A}(m_{A\to B}^i).
-$$
+Online ascent. Let $G_t = \sum_{k\ge t} \gamma^{k-t}\, r_k$ and let $\widehat G_t$ be any causal estimator with $\mathbb{E}[\widehat G_t\mid\mathcal{F}_t]=G_t$. With Moore timing (emission precedes update), unbiased stochastic-ascent updates that maximize $J_\gamma$ are
+\begin{align*}
+\theta_A^{t+1} &= \theta_A^t + \eta_t\,\Bigl[(\widehat G_t - b_t)\, \nabla_{\theta_A^t}\ln\pi_{\theta_A^t}(m_{A\to B}^t) + \gamma^{t-1}\, \nabla_{\theta_A^t}\ln P_{\theta_A^t}(D_t\mid m_{B\to A}^t)\Bigr],\\
+\theta_B^{t+1} &= \theta_B^t + \eta_t\,\Bigl[(\widehat G_t - b_t)\, \nabla_{\theta_B^t}\ln\pi_{\theta_B^t}(m_{B\to A}^t) + \gamma^{t-1}\, \nabla_{\theta_B^t}\ln P_{\theta_B^t}(D_t\mid m_{A\to B}^t)\Bigr],
+\end{align*}
+where $b_t$ is any baseline independent of the emission given $\mathcal{F}_t$. The policy term propagates credit for how messages at time $t$ influence all future discounted predictive scores; the supervised term improves the immediate predictive likelihood. Under standard step-size conditions, these updates ascend $J_\gamma$ in expectation.
 
 \section{Possible improvements}\label{sec:improvements}
 
-So currently, our online learning algorithm would be quite high variance, and it might help us to modify the setup to:
+Our online estimator can be high-variance. Two practical mitigations are:
 \begin{enumerate}
-\item remember more previous messages and rewards so we could better approximate $\sum_{i=0}^{\infty} \gamma^i r_i$, the return of the trajectory, and 
-\item add ``batching'' into the type signature so we can use GRPO-style averaging to decrease the variance of the estimator.
+\item maintain truncated $K$-step memories or eligibility traces to better approximate $\sum_{i=0}^{\infty} \gamma^i r_i$ for past actions,
+\item add batching/averaging (e.g., GRPO-style) to reduce estimator variance.
 \end{enumerate}
 
-I would also like to derive our update function from something closer to first principles, e.g., deriving $U$ by maximizing the probability of the trajectory with respect to $U$.
+
 
 \end{document}
-

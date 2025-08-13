@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\title{Policy-Gradient-Like Derivation for Shared-Parameter Agents}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\paragraph{Setting}
+Two agents $A$ and $B$ interact synchronously with a shared data stream $D$. At each step $t$ (Moore timing), each agent emits a message based on its internal state, then observes $(D_t,\, \text{partner's message at }t)$ to update its state. Each agent $X\in\{A,B\}$ has parameters $\theta_X$, \emph{shared} between its policy and predictor: the policy $\pi_{\theta_X}$ samples messages and the predictor $P_{\theta_X}$ assigns likelihoods to $D$ given the partner's message. Let $\theta=(\theta_A,\theta_B)$.
+
+\paragraph{Objective (infinite horizon)}
+Define the per-step cooperative reward
+\[
+  r_t\;=\; \ln P_{\theta_B}(D_t\mid m_{A\to B}^t)\; +\; \ln P_{\theta_A}(D_t\mid m_{B\to A}^t),\qquad t=1,2,\dots
+\]
+Two standard infinite-horizon objectives are
+\begin{align*}
+  J_{\mathrm{avg}}(\theta)
+  &:= \lim_{T\to\infty} \; \mathbb{E}\Bigl[\frac{1}{T}\sum_{t=1}^{T} r_t\Bigr],\\
+  J_{\gamma}(\theta)
+  &:= \mathbb{E}\Bigl[\sum_{t=1}^{\infty} \gamma^{\,t-1}\, r_t\Bigr],\qquad \gamma\in(0,1).
+\end{align*}
+When $r_t$ is bounded and suitable ergodicity holds, $(1-\gamma)\,J_{\gamma}(\theta)\to J_{\mathrm{avg}}(\theta)$ as $\gamma\uparrow 1$.
+
+Equivalently, maximizing $J_\gamma$ is maximizing a discounted product of the data likelihoods assigned by the predictors across time (the exogenous $P(D_t)$ drops out since it is $\theta$-independent):
+\begin{align}
+  J_\gamma(\theta) &= \mathbb{E}\Bigl[\sum_{t\ge 1} \gamma^{t-1} \ln P_{\theta_B}(D_t\mid m_{A\to B}^t) + \gamma^{t-1} \ln P_{\theta_A}(D_t\mid m_{B\to A}^t)\Bigr] \\
+  &\iff \text{maximize } \mathbb{E}\Bigl[\prod_{t\ge 1} \bigl(P_{\theta_B}(D_t\mid m_{A\to B}^t)\,P_{\theta_A}(D_t\mid m_{B\to A}^t)\bigr)^{\gamma^{t-1}}\Bigr].
+\end{align}
+\paragraph{Trajectory distribution}
+Under Moore timing and deterministic state updates, an infinite trajectory $\tau=(D_t,m_{A\to B}^t,m_{B\to A}^t)_{t\ge 1}$ has likelihood
+\[
+P_\theta(\tau) \;=\; \prod_{t\ge 1} P(D_t)\, \pi_{\theta_A^{t}}(m_{A\to B}^t)\, \pi_{\theta_B^{t}}(m_{B\to A}^t),
+\]
+where $P(D_t)$ is exogenous and $\theta_X^{t}$ denotes the (possibly updated) parameters of agent $X$ at time $t$.
+
+\paragraph{Gradient decomposition (discounted infinite horizon)}
+Let the discounted return-from-time-$t$ be $G_t=\sum_{k=t}^{\infty} \gamma^{\,k-t}\, r_k$. Using the likelihood-ratio identity and exchanging sums (justified by bounded $r_t$), the per-agent gradients are
+\begin{align*}
+\nabla_{\theta_A} J_{\gamma}(\theta)
+&= \mathbb{E}\Biggl[ \sum_{t\ge 1} \nabla_{\theta_A}\ln\pi_{\theta_A}(m_{A\to B}^t)\; G_t \Biggr]
+  \; + \; \mathbb{E}\Biggl[ \sum_{t\ge 1} \gamma^{\,t-1}\, \nabla_{\theta_A}\ln P_{\theta_A}(D_t\mid m_{B\to A}^t) \Biggr],\\
+\nabla_{\theta_B} J_{\gamma}(\theta)
+&= \mathbb{E}\Biggl[ \sum_{t\ge 1} \nabla_{\theta_B}\ln\pi_{\theta_B}(m_{B\to A}^t)\; G_t \Biggr]
+  \; + \; \mathbb{E}\Biggl[ \sum_{t\ge 1} \gamma^{\,t-1}\, \nabla_{\theta_B}\ln P_{\theta_B}(D_t\mid m_{A\to B}^t) \Biggr].
+\end{align*}
+The first term is the usual REINFORCE policy gradient with return $G_t$; the second arises because $r_t$ depends on $\theta$ through the predictors.
+
+\paragraph{Time-varying parameters without meta-parameters}
+Treat the per-time parameters $\theta_X^t$ as the variables we update online. Consider the discounted data log-likelihood along the trajectory
+\[
+  \mathcal{L}_\gamma^{\mathrm{data}}(\tau; \theta^{1:\infty}) 
+  = \sum_{t\ge 1} \gamma^{t-1} \Bigl( \ln P_{\theta_B^{t}}(D_t\mid m_{A\to B}^t) + \ln P_{\theta_A^{t}}(D_t\mid m_{B\to A}^t) \Bigr),
+\]
+where $\ln P(D_t)$ is omitted as $\theta$-independent. Maximizing $\mathbb{E}[\mathcal{L}_\gamma^{\mathrm{data}}]$ by steepest ascent with respect to each $\theta_X^{t}$ yields the online MLE-style updates
+\[
+  \theta_X^{t+1} 
+  = \theta_X^{t} 
+  + \eta_t \Bigl( \underbrace{\nabla_{\theta_X^{t}}\!\ln\pi_{\theta_X^{t}}(m_X^t)\, G_t}_{\text{policy (REINFORCE) term}} 
+    + \underbrace{\gamma^{t-1} \nabla_{\theta_X^{t}}\!\ln P_{\theta_X^{t}}(D_t\mid m_{\bar X\to X}^t)}_{\text{predictor (supervised) term}} \Bigr),
+\]
+which are exactly the gradients of $\mathbb{E}[\mathcal{L}_\gamma^{\mathrm{data}}]$ w.r.t. $\theta_X^{t}$. A baseline $b_t$ can be subtracted from $G_t$ without bias. This ties the update rule directly to maximizing the likelihood of the entire (discounted) data sequence, accounting for the exogenous $D_t$ that $\theta$ cannot influence.
+
+\paragraph{Single-step Monte Carlo and online updates}
+At time $t$, let $\widehat G_t$ be any causal estimator with $\mathbb{E}[\widehat G_t\mid\mathcal{F}_t]=G_t$ (e.g., sampled discounted return from $t$ onward, or a bootstrapped critic). With any baseline $b_t$ independent of $m_{X}^t$ given $\mathcal{F}_t$, the ascent-style online updates for \emph{time-varying} parameters are
+\begin{align*}
+\theta_A &\leftarrow \theta_A 
+\; + \; \eta_t\, \Bigl[ (\widehat G_t - b_t)\, \nabla_{\theta_A}\ln\pi_{\theta_A}(m_{A\to B}^{t}) 
+\; + \; \gamma^{\,t-1}\, \nabla_{\theta_A}\ln P_{\theta_A}(D_t\mid m_{B\to A}^{t}) \Bigr],\\
+\theta_B &\leftarrow \theta_B 
+\; + \; \eta_t\, \Bigl[ (\widehat G_t - b_t)\, \nabla_{\theta_B}\ln\pi_{\theta_B}(m_{B\to A}^{t}) 
+\; + \; \gamma^{\,t-1}\, \nabla_{\theta_B}\ln P_{\theta_B}(D_t\mid m_{A\to B}^{t}) \Bigr].
+\end{align*}
+\emph{Why unbiased?} Conditioning on the filtration $\mathcal{F}_t$ up to emission and treating $\theta^t$ as fixed at time $t$ (since emission precedes the update),
+\[
+\mathbb{E}\bigl[(\widehat G_t-b_t)\,\nabla\ln\pi_{\theta_X}(m_{X}^t)\mid\mathcal{F}_t\bigr]
+= \bigl(G_t-b_t\bigr)\, \mathbb{E}[\nabla\ln\pi_{\theta_X}(m_{X}^t)\mid\mathcal{F}_t]
+= G_t\, \nabla\ln\pi_{\theta_X}(m_{X}^t),
+\]
+since $\mathbb{E}[\nabla\ln\pi_{\theta_X^t}(m_{X}^t)\mid\mathcal{F}_t]=0$ and $\mathbb{E}[b_t\,\nabla\ln\pi_{\theta_X^t}(m_{X}^t)\mid\mathcal{F}_t]=0$. Taking full expectations and summing over $t$ recovers the policy-gradient terms in $\nabla J_{\gamma}$ evaluated at $\theta^t$. The supervised terms are already unbiased for the predictor gradients. Thus $\mathbb{E}[\Delta\theta_X^{t}]\propto \nabla_{\theta_X} J_{\gamma}(\theta^t)$.
+
+With diminishing step sizes $\sum_t \eta_t=\infty$, $\sum_t \eta_t^2<\infty$ (Robbins–Monro), the iterates converge to stationary points under standard regularity assumptions. With small constant $\eta_t$, the updates ascend $J_{\gamma}$ in expectation.
+
+\paragraph{Average-reward variant} Under ergodicity and bounded rewards, replacing $G_t$ with differential returns and taking $\gamma\uparrow 1$ yields estimators for $\nabla J_{\mathrm{avg}}(\theta)$. In practice one uses large $\gamma$ (e.g., $0.99$–$0.999$) as a low-variance surrogate for average reward.
+
+\end{document}
